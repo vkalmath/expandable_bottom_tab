@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_calendar"
+        icon="@drawable/ic_cal"
+        icon_pressed="@drawable/ic_cal_pressed"
+        title="calendar" />
+    <tab
+        id="@+id/tab_file"
+        icon="@drawable/ic_file"
+        icon_pressed="@drawable/ic_file_pressed"
+        title="file" />
+    <tab
+        id="@+id/tab_folder"
+        icon="@drawable/ic_folder"
+        icon_pressed="@drawable/ic_folder_pressed"
+        title="folder" />
+    <tab
+        id="@+id/tab_home"
+        icon="@drawable/ic_home"
+        icon_pressed="@drawable/ic_home_pressed"
+        title="home" />
+    <tab
+        id="@+id/tab_picture"
+        icon="@drawable/ic_picture"
+        icon_pressed="@drawable/ic_picture_pressed"
+        title="picture" />
+    <tab
+        id="@+id/tab_settings"
+        icon="@drawable/ic_settings"
+        icon_pressed="@drawable/ic_settings_pressed"
+        title="settings" />
+    <tab
+        id="@+id/tab_folder1"
+        icon="@drawable/ic_folder"
+        icon_pressed="@drawable/ic_folder_pressed"
+        title="folder" />
+
+</tabs>

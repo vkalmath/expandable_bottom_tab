@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_calendar"
+        icon="@drawable/ic_cal"
+        icon_pressed="@drawable/ic_cal_pressed"
+        title="calendar" />
+    <tab
+        id="@+id/tab_file"
+        icon="@drawable/ic_file"
+        icon_pressed="@drawable/ic_file_pressed"
+        title="file" />
+    <tab
+        id="@+id/tab_folder"
+        icon="@drawable/ic_folder"
+        icon_pressed="@drawable/ic_folder_pressed"
+        title="folder" />
+</tabs>

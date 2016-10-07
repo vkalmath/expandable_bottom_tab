@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.vk.dev.android.ExpandableBottomTabBar
+        android:id="@+id/tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        app:max_tab_count="5"
+        android:textSize="10sp"
+        android:textColor="#454534"
+        app:selected_tab_text_color="#FFFF0000"
+        app:tab_resource="@xml/bottombar_tabs_five"
+        app:more_icon_resource="@drawable/ic_more"
+        />
+
+</RelativeLayout>

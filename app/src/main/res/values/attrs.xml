@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomBar">
+        <attr name="tab_resource" format="reference" />
+        <attr name="tab_bg_color" format="color" />
+        <attr name="max_tab_count" format="integer" />
+        <attr name="selected_tab_text_color" format="color" />
+    </declare-styleable>
+</resources>
