@@ -82,10 +82,8 @@ tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListen
 ```
 
 Video Demo
-```
 https://youtu.be/g0m01F7TfuI
 
-```
 ## Motivation
 
 In Bottom Tab bar we can have maximum 4 to 5 tabs. If tab count increases more than 5, then they look cramped if we try to fit them in
