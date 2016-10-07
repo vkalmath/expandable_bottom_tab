@@ -28,6 +28,8 @@ Layout file:
 
 
 create bottombar_tabs_five.xml under src/main/res/xml folder
+
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
@@ -51,9 +53,23 @@ create bottombar_tabs_five.xml under src/main/res/xml folder
         icon_pressed="@drawable/ic_home_pressed"
         title="home" />
 </tabs>
+```
+
+Configurable Attributes
+```
+android:background="@android:color/white"
+app:max_tab_count="5"
+android:textSize="10sp"
+android:textColor="#454534"
+app:selected_tab_text_color="#FFFF0000"
+app:tab_resource="@xml/bottombar_tabs_five"
+app:more_icon_resource="@drawable/ic_more"
+
+```
 
 In Activity/Fragment
 
+```
 ExpandableBottomTabBar tabBarView = (ExpandableBottomTabBar) findViewById(R.id.tab_bar);
 
 tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListener() {
@@ -63,14 +79,19 @@ tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListen
                 "Clicked on Tab "+pos, Toast.LENGTH_SHORT).show();
     }
 });
+```
 
-
+Video Demo
+```
+https://youtu.be/g0m01F7TfuI
+```
 ## Motivation
 
 In Bottom Tab bar we can have maximum 4 to 5 tabs. If tab count increases more than 5, then they look cramped if we try to fit them in
 single tab bar. Other way is to have facebook style, where last tab can take to new screen which has list of other tabs.
 If tabs are more than 5 and less than 8 then we can have them in two tab bars one below another. The other tab bar can be hidden, and can make it
 appear on touching "more" tab on first tab bar.
+Technically we can add as many tabs as possible. Depending on max number of tabs library will create the tab bars.
 
 ## Installation
 
