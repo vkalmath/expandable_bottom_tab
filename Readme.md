@@ -5,6 +5,7 @@ Using Bottom Expandable Tab bar, user can create bottom tab bar for android with
 ## Code Example
 Layout file:
 
+```
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,9 +24,8 @@ Layout file:
         app:tab_resource="@xml/bottombar_tabs_five"
         app:more_icon_resource="@drawable/ic_more"
         />
-
 </RelativeLayout>
-
+```
 
 create bottombar_tabs_five.xml under src/main/res/xml folder
 
