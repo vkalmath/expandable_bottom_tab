@@ -32,12 +32,14 @@ import java.util.List;
  * Created by kalmath_v on 8/29/16.
  */
 
-public class ExpandableBottomTabBar extends LinearLayout implements View.OnClickListener{
+public class ExpandableBottomTabBar extends LinearLayout implements View.OnClickListener {
 
     private static final String SELECTED_TAB = "Selected Tab";
     private static final String TAG = "TabBarView";
+    public static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
     private int MAX_TABS_PER_ROW = 5;
     private int mMoreTabPosition = MAX_TABS_PER_ROW - 1;
+    private Context mContext;
     private LinearLayout mRootContainer;
     private final List<LinearLayout> mTabContainers = new ArrayList<LinearLayout>();
     private int mTabCount = 20;
@@ -73,19 +75,25 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
 
     public ExpandableBottomTabBar(Context context) {
         super(context);
-        init(context, null);
+        init(context, null, 0);
+    }
+
+    public ExpandableBottomTabBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs, 0);
+    }
+
+    public ExpandableBottomTabBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr);
     }
 
     public void setOnTabClickedListener(OnTabClickedListener listener) {
         mOnTabClickedListener = listener;
     }
 
-    public ExpandableBottomTabBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
-    }
-
-    private void init(Context context, AttributeSet attrs) {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        mContext = context;
         populateAttributes(context, attrs);
         initializeViews();
     }
@@ -105,30 +113,30 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
             mSelectedTabTextColor = ta.getColor(R.styleable.BottomBar_selected_tab_text_color, 0xffffffff);
             mMoreIconRecId = ta.getResourceId(R.styleable.BottomBar_more_icon_resource, android.R.drawable.ic_menu_more);
             mMoreTabPosition = mMaxTabPerRow - 1;
-            String bgColor = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "background");
-            if(bgColor.contains("@")) {
+            String bgColor = attrs.getAttributeValue(ANDROID_NS, "background");
+            if (bgColor.contains("@")) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     mBgColor = getResources().getColor(Integer.valueOf(bgColor.replace("@", "")), null);
-                }else{
+                } else {
                     mBgColor = getResources().getColor(Integer.valueOf(bgColor.replace("@", "")));
                 }
-            }else if(bgColor.contains("#")){
+            } else if (bgColor.contains("#")) {
                 mBgColor = Color.parseColor(bgColor);
             }
-            String textColor = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "textColor");
-            if(textColor.contains("@")) {
+            String textColor = attrs.getAttributeValue(ANDROID_NS, "textColor");
+            if (textColor.contains("@")) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     mTabTextColor = getResources().getColor(Integer.valueOf(textColor.replace("@", "")), null);
                 } else {
                     mTabTextColor = getResources().getColor(Integer.valueOf(textColor.replace("@", "")));
                 }
-            }else if(textColor.contains("#")) {
+            } else if (textColor.contains("#")) {
                 mTabTextColor = Color.parseColor(textColor);
             }
-            String textSize = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "textSize");
-            if(textSize.contains("sp")) {
+            String textSize = attrs.getAttributeValue(ANDROID_NS, "textSize");
+            if (textSize.contains("sp")) {
                 mTextSize = Float.valueOf(textSize.replace("sp", ""));
-            } else if(textSize.contains("dp")) {
+            } else if (textSize.contains("dp")) {
                 mTextSize = Float.valueOf(textSize.replace("dp", ""));
             } else {
                 mTextSize = Float.valueOf(textSize);
@@ -147,17 +155,17 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 // instead of the following if/else if lines
                 // you should custom parse your xml
-                if(eventType == XmlPullParser.START_DOCUMENT) {
-                    Log.i(TAG,"Start document");
-                } else if(eventType == XmlPullParser.START_TAG) {
-                    Log.i(TAG,"Start tag "+parser.getName());
-                    if(parser.getName().equals("tab")) {
+                if (eventType == XmlPullParser.START_DOCUMENT) {
+                    Log.i(TAG, "Start document");
+                } else if (eventType == XmlPullParser.START_TAG) {
+                    Log.i(TAG, "Start tag " + parser.getName());
+                    if (parser.getName().equals("tab")) {
                         parseTabInfo(parser);
                     }
-                } else if(eventType == XmlPullParser.END_TAG) {
-                    Log.i(TAG,"End tag "+parser.getName());
-                } else if(eventType == XmlPullParser.TEXT) {
-                    Log.i(TAG,"Text "+parser.getText());
+                } else if (eventType == XmlPullParser.END_TAG) {
+                    Log.i(TAG, "End tag " + parser.getName());
+                } else if (eventType == XmlPullParser.TEXT) {
+                    Log.i(TAG, "Text " + parser.getText());
                 }
                 eventType = parser.next();
             }
@@ -165,7 +173,7 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
             e.printStackTrace();
         } finally {
             mTabCount = mTabInfoList.size();
-            if(mTabCount > mMaxTabPerRow) {
+            if (mTabCount > mMaxTabPerRow) {
                 final TabInformation moreTab = new TabInformation();
                 moreTab.title = "More";
                 moreTab.iconResId = mMoreIconRecId;
@@ -177,19 +185,64 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
 
     private void parseTabInfo(XmlResourceParser parser) {
         TabInformation tab = new TabInformation();
-        tab.id = parser.getAttributeResourceValue(0, 0);
-        tab.iconResId = parser.getAttributeResourceValue(1, 0);
-        tab.iconPressedResId = parser.getAttributeResourceValue(2, 0);
-        tab.title = parser.getAttributeValue(3);
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
+            String attrName = parser.getAttributeName(i);
+            switch (attrName) {
+                case "id":
+                    tab.id = parser.getIdAttributeResourceValue(i);
+                    break;
+                case "icon":
+                    tab.iconResId = parser.getAttributeResourceValue(i, 0);
+                    break;
+                case "icon_pressed":
+                    tab.iconPressedResId = parser.getAttributeResourceValue(i, 0) == 0
+                            ? tab.iconResId : parser.getAttributeResourceValue(i, 0);
+                    break;
+                case "title":
+                    tab.title = getTitleValue(i, parser);
+                    break;
+            }
+        }
+
+        if(tab.iconPressedResId == 0){
+            tab.iconPressedResId = tab.iconResId;
+        }
+
         mTabInfoList.add(tab);
     }
 
-    public ExpandableBottomTabBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    private String getTitleValue(int attrIndex, XmlResourceParser parser) {
+        int titleResource = parser.getAttributeResourceValue(attrIndex, 0);
+
+        if (titleResource != 0) {
+            return mContext.getString(titleResource);
+        }
+
+        return parser.getAttributeValue(attrIndex);
     }
 
     public void setTabCount(int count) {
         this.mTabCount = count;
+    }
+
+    /**
+     * Set the selected tab
+     * @param index
+     */
+    public void setSelectedTab(int index) {
+        this.mSelectedTab = index;
+        setFocusOnTab(mSelectedTab);
+        if (mSelectedTab > mMoreTabPosition) {
+            ((TextView) mTabViewList.get(mMoreTabPosition)).setTextColor(mSelectedTabTextColor);
+        }
+    }
+
+    /**
+     * get Selected Tab
+     * @return
+     */
+    public int getSelectedTab() {
+        return mSelectedTab;
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -212,17 +265,17 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
 
     private void initializeTabContainers() {
         int layoutCount = 1;
-        if(mTabCount > mMaxTabPerRow) {
+        if (mTabCount > mMaxTabPerRow) {
             mTabCount = mTabCount + 1;
         }
 
         final int quotient = mTabCount / mMaxTabPerRow;
         final int remainder = mTabCount % mMaxTabPerRow;
-        if(mTabCount < mMaxTabPerRow) {
+        if (mTabCount < mMaxTabPerRow) {
             layoutCount = 1;
-        } else if(quotient >= 1 && remainder > 0) {
-                layoutCount = quotient + 1;
-        } else if(remainder == 0) {
+        } else if (quotient >= 1 && remainder > 0) {
+            layoutCount = quotient + 1;
+        } else if (remainder == 0) {
             layoutCount = quotient;
         }
         mTabContainerCount = layoutCount;
@@ -230,25 +283,25 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         int width = LayoutParams.MATCH_PARENT;
         int height = LayoutParams.WRAP_CONTENT;
         final LayoutParams params = new LayoutParams(width, height);
-        for(int index = 0; index < layoutCount; index++){
+        for (int index = 0; index < layoutCount; index++) {
             final LinearLayout linearLayout = new LinearLayout(getContext());
             linearLayout.setLayoutParams(params);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
             linearLayout.setLayoutDirection(LinearLayout.LAYOUT_DIRECTION_LOCALE);
             linearLayout.setGravity(Gravity.CENTER);
             linearLayout.setWeightSum(100);
-            if(index > 0 ) {
+            if (index > 0) {
                 linearLayout.setVisibility(View.GONE);
             }
             mRootContainer.addView(linearLayout, index);
         }
 
         final LayoutParams params1 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params1.weight = 100f / (float)mMaxTabPerRow;
-        for(int index = 0 ; index < mTabCount; index++) {
+        params1.weight = 100f / (float) mMaxTabPerRow;
+        for (int index = 0; index < mTabCount; index++) {
             TextView textView = new TextView(getContext());
             textView.setLayoutParams(params1);
-            textView.setPadding(mPadding,mPadding,mPadding,mPadding);
+            textView.setPadding(mPadding, mPadding, mPadding, mPadding);
             textView.setTextSize(mTextSize);
             textView.setGravity(Gravity.CENTER);
 
@@ -259,7 +312,7 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
 
             textView.setOnClickListener(this);
 
-            ((LinearLayout)mRootContainer.getChildAt(getLayoutIndex(index))).addView(textView);
+            ((LinearLayout) mRootContainer.getChildAt(getLayoutIndex(index))).addView(textView);
             mTabViewList.add(textView);
 
             setFocusOnTab(index);
@@ -267,23 +320,23 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     }
 
     private void setFocusOnTab(int index) {
-        if(index == mSelectedTab ) {
-            ((TextView)mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
-            ((TextView)mTabViewList.get(index))
+        if (index == mSelectedTab) {
+            ((TextView) mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
+            ((TextView) mTabViewList.get(index))
                     .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(index).iconPressedResId, 0, 0);
         }
-        if(mSelectedTab > mMoreTabPosition) {
-            if( index == mMoreTabPosition) {
-                ((TextView)mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
-                ((TextView)mTabViewList.get(index))
+        if (mSelectedTab > mMoreTabPosition) {
+            if (index == mMoreTabPosition) {
+                ((TextView) mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
+                ((TextView) mTabViewList.get(index))
                         .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(index).iconPressedResId, 0, 0);
             }
         }
     }
 
     private void resetFocusOnAllTabs() {
-        for(View textView : mTabViewList) {
-            ((TextView)textView).setTextColor(mTabTextColor);
+        for (View textView : mTabViewList) {
+            ((TextView) textView).setTextColor(mTabTextColor);
         }
     }
 
@@ -294,19 +347,19 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     @Override
     public void onClick(View view) {
         int pos = -1;
-        if(mOnTabClickedListener != null) {
+        if (mOnTabClickedListener != null) {
             pos = getClickedPosition(view);
 
             mOnTabClickedListener.onTabClicked(view, pos);
             final View topTabContainer = mRootContainer.getChildAt(0);
             final int btmTabContainerCount = mRootContainer.getChildCount() - 1;
-            if( btmTabContainerCount > 0) {
+            if (btmTabContainerCount > 0) {
                 final View[] btmTabContainers = new View[btmTabContainerCount];
                 for (int i = 0; i < btmTabContainerCount; i++) {
                     btmTabContainers[i] = mRootContainer.getChildAt(i + 1);
                 }
 
-                if (isAnyBottomContainerVisible(btmTabContainers)  ) {
+                if (isAnyBottomContainerVisible(btmTabContainers)) {
                     ValueAnimator btm = ValueAnimator.ofFloat(topTabContainer.getHeight(), 0);
                     btm.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
@@ -327,8 +380,8 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
 
                     btm.setDuration(mAnimationDuration);
                     btm.start();
-                } else if(pos == mMoreTabPosition &&
-                        mAllTabsVisible == false){
+                } else if (pos == mMoreTabPosition &&
+                        mAllTabsVisible == false) {
                     setBtmTabsVisibility(btmTabContainers, View.VISIBLE);
                     mAllTabsVisible = true;
                     ValueAnimator btm = ValueAnimator.ofFloat(0, topTabContainer.getHeight());
@@ -345,25 +398,25 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
                 }
             }
 
-            if(pos != mMoreTabPosition) {
+            if (pos != mMoreTabPosition) {
                 getTabViewAt(mSelectedTab).setBackgroundColor(mBgColor);
-                ((TextView)getTabViewAt(mSelectedTab)).setTextColor(mTabTextColor);
-                ((TextView)getTabViewAt(mSelectedTab))
+                ((TextView) getTabViewAt(mSelectedTab)).setTextColor(mTabTextColor);
+                ((TextView) getTabViewAt(mSelectedTab))
                         .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(mSelectedTab).iconResId, 0, 0);
 
                 mSelectedTab = pos;
 
-                ((TextView)getTabViewAt(pos)).setTextColor(mSelectedTabTextColor);
-                ((TextView)getTabViewAt(pos)).setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(pos).iconPressedResId, 0, 0);
+                ((TextView) getTabViewAt(pos)).setTextColor(mSelectedTabTextColor);
+                ((TextView) getTabViewAt(pos)).setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(pos).iconPressedResId, 0, 0);
             }
-            if(mSelectedTab > mMoreTabPosition) {
-                ((TextView)getTabViewAt(mMoreTabPosition)).setTextColor(mSelectedTabTextColor);
-                ((TextView)getTabViewAt(mMoreTabPosition))
+            if (mSelectedTab > mMoreTabPosition) {
+                ((TextView) getTabViewAt(mMoreTabPosition)).setTextColor(mSelectedTabTextColor);
+                ((TextView) getTabViewAt(mMoreTabPosition))
                         .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(mMoreTabPosition).iconPressedResId, 0, 0);
             }
-            if(mSelectedTab < mMaxTabPerRow && mTabContainerCount > 1){
-                ((TextView)getTabViewAt(mMoreTabPosition)).setTextColor(mTabTextColor);
-                ((TextView)getTabViewAt(mMoreTabPosition))
+            if (mSelectedTab < mMaxTabPerRow && mTabContainerCount > 1) {
+                ((TextView) getTabViewAt(mMoreTabPosition)).setTextColor(mTabTextColor);
+                ((TextView) getTabViewAt(mMoreTabPosition))
                         .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(mMoreTabPosition).iconResId, 0, 0);
                 getTabViewAt(mMoreTabPosition).setBackgroundColor(mBgColor);
             }
@@ -375,8 +428,8 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     }
 
     private int getClickedPosition(View view) {
-        for(View tabView : mTabViewList) {
-            if(view == tabView) {
+        for (View tabView : mTabViewList) {
+            if (view == tabView) {
                 return mTabViewList.indexOf(tabView);
             }
         }
@@ -384,20 +437,20 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
     }
 
     private void setBtmTabsVisibility(View[] btmTabContainers, int visibility) {
-        for(View btmTabContainer : btmTabContainers) {
+        for (View btmTabContainer : btmTabContainers) {
             btmTabContainer.setVisibility(visibility);
         }
     }
 
     private void setLayoutParamsToBtmTabs(View[] btmTabContainers, LayoutParams layoutParams) {
-        for(View btmTabContainer : btmTabContainers) {
+        for (View btmTabContainer : btmTabContainers) {
             btmTabContainer.setLayoutParams(layoutParams);
         }
     }
 
     private boolean isAnyBottomContainerVisible(View[] btmTabContainers) {
-        for(View view : btmTabContainers) {
-            if(view.getVisibility() == View.VISIBLE) {
+        for (View view : btmTabContainers) {
+            if (view.getVisibility() == View.VISIBLE) {
                 return true;
             }
         }
@@ -422,8 +475,8 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         super.onRestoreInstanceState(state);
         resetFocusOnAllTabs();
         setFocusOnTab(mSelectedTab);
-        if( mSelectedTab > mMoreTabPosition) {
-            ((TextView)mTabViewList.get(mMoreTabPosition)).setTextColor(mSelectedTabTextColor);
+        if (mSelectedTab > mMoreTabPosition) {
+            ((TextView) mTabViewList.get(mMoreTabPosition)).setTextColor(mSelectedTabTextColor);
         }
     }
 
