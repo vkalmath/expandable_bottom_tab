@@ -84,6 +84,7 @@ tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListen
 Video Demo
 ```
 https://youtu.be/g0m01F7TfuI
+
 ```
 ## Motivation
 
