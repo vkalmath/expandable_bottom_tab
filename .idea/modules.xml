@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BottomExpandableTab.iml" filepath="$PROJECT_DIR$/BottomExpandableTab.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/expandable_bottom_tab.iml" filepath="$PROJECT_DIR$/expandable_bottom_tab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/expandablebottombar/expandablebottombar.iml" filepath="$PROJECT_DIR$/expandablebottombar/expandablebottombar.iml" />
       <module fileurl="file://$PROJECT_DIR$/expandablebottombar/expandablebottombar.iml" filepath="$PROJECT_DIR$/expandablebottombar/expandablebottombar.iml" />
     </modules>
   </component>

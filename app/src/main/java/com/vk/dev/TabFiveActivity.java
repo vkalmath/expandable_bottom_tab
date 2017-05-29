@@ -16,7 +16,7 @@ public class TabFiveActivity extends AppCompatActivity {
         setContentView(R.layout.five_lab_layout);
 
         ExpandableBottomTabBar tabBarView = (ExpandableBottomTabBar) findViewById(R.id.tab_bar);
-
+        tabBarView.resetFocusOnAllTabs();
         tabBarView.setOnTabClickedListener(new ExpandableBottomTabBar.OnTabClickedListener() {
             @Override
             public void onTabClicked(View view, int pos) {
