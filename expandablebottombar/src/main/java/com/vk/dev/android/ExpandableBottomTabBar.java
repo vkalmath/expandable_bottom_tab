@@ -319,7 +319,7 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         }
     }
 
-    private void setFocusOnTab(int index) {
+    public void setFocusOnTab(int index) {
         if (index == mSelectedTab) {
             ((TextView) mTabViewList.get(index)).setTextColor(mSelectedTabTextColor);
             ((TextView) mTabViewList.get(index))
@@ -334,9 +334,14 @@ public class ExpandableBottomTabBar extends LinearLayout implements View.OnClick
         }
     }
 
-    private void resetFocusOnAllTabs() {
+    public void resetFocusOnAllTabs() {
         for (View textView : mTabViewList) {
             ((TextView) textView).setTextColor(mTabTextColor);
+        }
+
+        for(int i = 0; i < mTabViewList.size(); i++ ){
+            ((TextView) mTabViewList.get(i))
+                    .setCompoundDrawablesRelativeWithIntrinsicBounds(0, mTabInfoList.get(i).iconResId, 0, 0);
         }
     }
 
