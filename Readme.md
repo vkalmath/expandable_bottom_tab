@@ -2,6 +2,8 @@
 
 Using Bottom Expandable Tab bar, user can create bottom tab bar for android with as many tabs as possible. Maximum tabs for each Tab Bar can be set.
 
+sample can be checked at: https://www.youtube.com/watch?v=g0m01F7TfuI
+
 ## Code Example
 Layout file:
 
